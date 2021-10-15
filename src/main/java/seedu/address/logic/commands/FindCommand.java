@@ -28,10 +28,10 @@ public class FindCommand extends Command {
             + "[" + PREFIX_NAME + "NAME] " + "[" + PREFIX_NAME + "MORE_NAMES] "
             + "[" + PREFIX_PHONE + "PHONE] " + "[" + PREFIX_PHONE + "MORE_PHONES] "
             + "[" + PREFIX_EMAIL + "EMAIL] " + "[" + PREFIX_PHONE + "MORE_EMAILS] "
-            + "[" + PREFIX_NATIONALITY + "NATIONALITY] " + "[" + PREFIX_PHONE + "MORE_NATIONALITY] "
-            + "[" + PREFIX_TUTORIAL_GROUP + "TUTORIAL GROUP] " + "[" + PREFIX_PHONE + "MORE_TUTORIAL GROUPS] "
+            + "[" + PREFIX_NATIONALITY + "NATIONALITY] " + "[" + PREFIX_NATIONALITY + "MORE_NATIONALITY] "
+            + "[" + PREFIX_TUTORIAL_GROUP + "TUTORIAL GROUP] " + "[" + PREFIX_TUTORIAL_GROUP + "MORE_TUTORIAL GROUPS] "
             + "[" + PREFIX_TAG + "TAG] " + "[" + PREFIX_TAG + "MORE_TAGS]...\n "
-            + "Example: " + COMMAND_WORD + "n/alice p/91234567 tg/19";
+            + "Example: " + COMMAND_WORD + " n/alice n/bob p/91234567 tg/19 tg/20 tg/00";
 
     private Predicate<Person> predicate;
 
