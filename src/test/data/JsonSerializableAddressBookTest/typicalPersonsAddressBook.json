@@ -29,7 +29,7 @@
     "tutorialGroup": "T05",
     "socialHandle": "@carlk",
     "remark" : "She likes aardvarks.",
-    "tagged" : [ ]
+    "tagged" : [ "optimistic" ]
   }, {
     "name" : "Daniel Meier",
     "gender": "M",
@@ -49,7 +49,7 @@
     "tutorialGroup": "T29",
     "socialHandle": "@ellem",
     "remark" : "She likes aardvarks.",
-    "tagged" : [ ]
+    "tagged" : [ "optimistic" ]
   }, {
     "name" : "Fiona Kunz",
     "gender": "F",
@@ -59,7 +59,7 @@
     "tutorialGroup": "T19",
     "socialHandle": "@fionak",
     "remark" : "She likes aardvarks.",
-    "tagged" : [ ]
+    "tagged" : [ "optimistic" ]
   }, {
     "name" : "George Best",
     "gender": "M",
@@ -69,6 +69,6 @@
     "tutorialGroup": "T28",
     "socialHandle": "@georgeb",
     "remark" : "She likes aardvarks.",
-    "tagged" : [ ]
+    "tagged" : [ "optimistic" ]
   } ]
 }

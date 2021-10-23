@@ -1,5 +1,6 @@
 package seedu.address.testutil;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,6 +29,7 @@ public class PersonBuilder {
     public static final String DEFAULT_TUTORIAL_GROUP = "T01";
     public static final String DEFAULT_SOCIAL_HANDLE = "@amybee";
     public static final String DEFAULT_REMARK = "She likes aardvarks.";
+    public static final String DEFAULT_TAG = "optimistic";
 
     private Name name;
     private Gender gender;
@@ -51,7 +53,7 @@ public class PersonBuilder {
         tutorialGroup = new TutorialGroup(DEFAULT_TUTORIAL_GROUP);
         socialHandle = new SocialHandle(DEFAULT_SOCIAL_HANDLE);
         remark = new Remark(DEFAULT_REMARK);
-        tags = new HashSet<>();
+        tags = new HashSet<Tag>(Arrays.asList(new Tag(DEFAULT_TAG)));
     }
 
     /**
@@ -139,6 +141,14 @@ public class PersonBuilder {
      */
     public PersonBuilder withRemark(String remark) {
         this.remark = new Remark(remark);
+        return this;
+    }
+
+    /**
+     * Sets the {@code Tag} of the {@code Person} that we are building.
+     */
+    public PersonBuilder withRemark(Set<Tag> tags) {
+        this.tags = new HashSet<>(tags);
         return this;
     }
 
