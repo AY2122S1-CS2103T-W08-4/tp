@@ -258,6 +258,7 @@ public class DeleteTagCommandTest {
 
         Person firstPersonToEdit = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         Set<Tag> tagsToDelete = new HashSet<>(firstPersonToEdit.getTags());
+        String initialTagString = DeleteTagCommand.tagString(tagsToDelete);
         tagsToDelete.add(new Tag("Thisshouldnotbeinthefinallist")); //Extra Tag, causing error
         DeleteTagCommand deleteTagCommand = new DeleteTagCommand(null, tagsToDelete);
 
@@ -269,7 +270,9 @@ public class DeleteTagCommandTest {
             expectedModel.setPerson(model.getFilteredPersonList().get(i), personToEdit);
         }
 
-        assertCommandFailure(deleteTagCommand, model, DeleteTagCommand.MESSAGE_TAG_NOT_DELETED_EVERYONE);
+        String expectedMessage = String.format(DeleteTagCommand.MESSAGE_DELETED_TAG_SUCCESS, initialTagString);
+
+        assertCommandSuccess(deleteTagCommand, model, expectedMessage, expectedModel);
     }
 
     @Test
@@ -281,7 +284,8 @@ public class DeleteTagCommandTest {
 
         Person personToEdit = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         Set<Tag> tagsToDelete = new HashSet<>(personToEdit.getTags());
-        tagsToDelete.add(new Tag("Thisshouldnotbeinthefinallist")); //Extra Tag, causing error
+        String initialTagString = DeleteTagCommand.tagString(tagsToDelete);
+        tagsToDelete.add(new Tag("Thisshouldnotbeinthefinallist"));
         DeleteTagCommand deleteTagCommand = new DeleteTagCommand(INDEX_FIRST_PERSON, tagsToDelete);
 
         for (Tag tagToDelete: tagsToDelete) {
@@ -290,7 +294,10 @@ public class DeleteTagCommandTest {
 
         expectedModel.setPerson(model.getFilteredPersonList().get(0), personToEdit);
 
-        assertCommandFailure(deleteTagCommand, model, DeleteTagCommand.MESSAGE_TAG_NOT_DELETED_SOMEONE);
+        String expectedMessage = String.format(DeleteTagCommand.MESSAGE_DELETED_TAG_SUCCESS, initialTagString) + " "
+                + String.format(DeleteTagCommand.MESSAGE_EDIT_PERSON_SUCCESS, personToEdit);
+
+        assertCommandSuccess(deleteTagCommand, model, expectedMessage, expectedModel);
     }
 
     @Test

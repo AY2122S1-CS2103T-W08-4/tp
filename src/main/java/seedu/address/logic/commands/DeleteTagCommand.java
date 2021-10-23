@@ -46,11 +46,11 @@ public class DeleteTagCommand extends Command {
     public static final String MESSAGE_DELETED_ALL_TAG_SUCCESS = "Deleted All Tags.";
     public static final String MESSAGE_DELETED_TAG_SUCCESS = "Deleted Tag: %1$s";
     public static final String MESSAGE_EDIT_PERSON_SUCCESS = "Edited Person: %1$s";
-    public static final String MESSAGE_TAG_NOT_DELETED_SOMEONE = "This person do not have the tags to delete";
-    public static final String MESSAGE_TAG_NOT_DELETED_EVERYONE = "All people do not have the tags to delete";
+    public static final String MESSAGE_TAG_NOT_DELETED = "There are no tags to delete.";
 
     private final Index index;
     private final Set<Tag> tag;
+    private Set<Tag> removedTags;
 
     /**
      * @param index of the person in the filtered person list to delete tags.
@@ -102,7 +102,7 @@ public class DeleteTagCommand extends Command {
         if (!tag.isEmpty()) {
             tag.forEach(builder::append);
         }
-        return new CommandResult(String.format(MESSAGE_DELETED_TAG_SUCCESS, tagString(tag)));
+        return new CommandResult(String.format(MESSAGE_DELETED_TAG_SUCCESS, tagString(removedTags)));
     }
 
     /**
@@ -110,7 +110,7 @@ public class DeleteTagCommand extends Command {
      */
     private CommandResult executeSomeTagsSomeone(Model model) throws CommandException {
         Person editedPerson = executeSomeone(model, tag);
-        return new CommandResult(String.format(MESSAGE_DELETED_TAG_SUCCESS, tagString(tag)) + " "
+        return new CommandResult(String.format(MESSAGE_DELETED_TAG_SUCCESS, tagString(removedTags)) + " "
                 + String.format(MESSAGE_EDIT_PERSON_SUCCESS, editedPerson));
     }
 
@@ -130,6 +130,7 @@ public class DeleteTagCommand extends Command {
             initialPersons.add(i, lastShownList.get(i));
             personsToEdit.add(i, lastShownList.get(i));
         }
+        removedTags = new HashSet<>();
 
         if (tag == null) {
             for (int i = startIndex; i < endIndex; i++) {
@@ -145,13 +146,16 @@ public class DeleteTagCommand extends Command {
                 }
                 personsToEdit.set(i, editedPerson);
             }
-            if (duplicateCounter >= endIndex) {
-                throw new CommandException(MESSAGE_TAG_NOT_DELETED_EVERYONE);
+            if (duplicateCounter >= (endIndex - startIndex)) {
+                throw new CommandException(MESSAGE_TAG_NOT_DELETED);
             }
         } else {
+            int totalCounter = 0;
+            duplicateCounter = 0;
             for (Tag currTag : tag) {
-                duplicateCounter = 0;
+                int currCounter = duplicateCounter;
                 for (int i = startIndex; i < endIndex; i++) {
+                    totalCounter++;
                     Person personToEdit = personsToEdit.get(i);
                     Person editedPerson = deleteTag(personToEdit, currTag);
 
@@ -164,9 +168,12 @@ public class DeleteTagCommand extends Command {
                     }
                     personsToEdit.set(i, editedPerson);
                 }
-                if (duplicateCounter >= endIndex) {
-                    throw new CommandException(MESSAGE_TAG_NOT_DELETED_EVERYONE);
+                if (duplicateCounter - currCounter < endIndex - startIndex) {
+                    removedTags.add(currTag);
                 }
+            }
+            if (duplicateCounter >= totalCounter) {
+                throw new CommandException(MESSAGE_TAG_NOT_DELETED);
             }
         }
         for (int i = startIndex; i < endIndex; i++) {
@@ -183,6 +190,8 @@ public class DeleteTagCommand extends Command {
         if (index.getZeroBased() >= lastShownList.size() || index.getZeroBased() < 0) {
             throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
         }
+        int duplicateCounter = 0;
+        removedTags = new HashSet<>();
         if (tag == null) {
             Person personToEdit = lastShownList.get(index.getZeroBased());
             Person editedPerson = deleteTag(personToEdit, null);
@@ -191,13 +200,14 @@ public class DeleteTagCommand extends Command {
             Set<Tag> newTag = editedPerson.getTags();
             boolean isEqualTags = oldTag.equals(newTag);
             if (isEqualTags) {
-                throw new CommandException(MESSAGE_TAG_NOT_DELETED_SOMEONE);
+                throw new CommandException(MESSAGE_TAG_NOT_DELETED);
             }
             model.setPerson(personToEdit, editedPerson);
             return editedPerson;
         } else {
             Person personToEdit = lastShownList.get(index.getZeroBased());
             Person currPersonToEdit = lastShownList.get(index.getZeroBased());
+
             for (Tag currTag : tag) {
                 Person editedPerson = deleteTag(currPersonToEdit, currTag);
 
@@ -205,9 +215,14 @@ public class DeleteTagCommand extends Command {
                 Set<Tag> newTag = editedPerson.getTags();
                 boolean isEqualTags = oldTag.equals(newTag);
                 if (isEqualTags) {
-                    throw new CommandException(MESSAGE_TAG_NOT_DELETED_SOMEONE);
+                    duplicateCounter++;
+                    continue;
                 }
+                removedTags.add(currTag);
                 currPersonToEdit = editedPerson;
+            }
+            if (duplicateCounter >= tag.size()) {
+                throw new CommandException(MESSAGE_TAG_NOT_DELETED);
             }
             model.setPerson(personToEdit, currPersonToEdit);
             return currPersonToEdit;
