@@ -27,8 +27,7 @@ public class DeleteTagCommandParser implements Parser<DeleteTagCommand> {
 
         Index index;
         Set<Tag> tags;
-
-        if (argMultimap.getPreamble().isEmpty()) {
+        if (argMultimap.getPreamble().equals("all")) {
             index = null; //When no index is inputted
         } else {
             try {

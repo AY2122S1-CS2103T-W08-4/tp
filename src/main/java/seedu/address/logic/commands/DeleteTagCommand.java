@@ -34,11 +34,13 @@ public class DeleteTagCommand extends Command {
     public static final String COMMAND_WORD = "deletet";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Delete tags of persons in the current list. "
-            + "Delete all tags of a person by inputting the index number used in the displayed "
-            + "person list. OR, delete a tag of all person by inputting the tag. OR, delete a tag of a person by "
-            + "inputting both the index number and the tag."
+            + "Enter 'deletet all' to delete all tags of everyone in the current list"
+            + "Enter 'deletet INDEX' to delete all tags of the selected person from the current list"
+            + "Enter 'deletet all [t/TAG1 t/TAG2...]' to delete these tags for everyone in the current list."
+            + "Enter 'deletet INDEX [t/TAG1 t/TAG2...]' to delete these tags for the selected person from the current"
+            + "list."
             + "Parameters: "
-            + "[INDEX (must be a positive integer)] "
+            + "INDEX (must be a positive integer or the string 'all') "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " 1 "
             + PREFIX_TAG + "CS2103 Group Mate ";

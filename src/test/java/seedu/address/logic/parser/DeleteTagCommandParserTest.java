@@ -80,7 +80,7 @@ public class DeleteTagCommandParserTest {
 
         DeleteTagCommand expectedCommand = new DeleteTagCommand(targetIndex, validTag);
 
-        assertParseSuccess(parser, validTagString, expectedCommand);
+        assertParseSuccess(parser, "all" + validTagString, expectedCommand);
     }
 
     @Test
@@ -90,7 +90,7 @@ public class DeleteTagCommandParserTest {
 
         DeleteTagCommand expectedCommand = new DeleteTagCommand(targetIndex, validTag);
 
-        assertParseSuccess(parser, "", expectedCommand);
+        assertParseSuccess(parser, "all", expectedCommand);
     }
 
     @Test
