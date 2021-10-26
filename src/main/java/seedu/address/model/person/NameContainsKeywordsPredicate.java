@@ -1,5 +1,7 @@
 package seedu.address.model.person;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -8,6 +10,8 @@ import java.util.function.Predicate;
  */
 public class NameContainsKeywordsPredicate implements Predicate<Person> {
     private final List<String> keywords;
+    public static NameContainsKeywordsPredicate EMPTY_KEYWORD_PREDICATE =
+            new NameContainsKeywordsPredicate(new ArrayList<String>(Arrays.asList("")));
 
     public NameContainsKeywordsPredicate(List<String> keywords) {
         this.keywords = keywords;
