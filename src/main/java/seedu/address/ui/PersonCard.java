@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import seedu.address.model.person.Gender;
 import seedu.address.model.person.Person;
 
 /**
@@ -79,7 +80,7 @@ public class PersonCard extends UiPart<Region> {
             socialHandle.setManaged(false);
         }
         gender.setText("");
-        gender.setGraphic(new ImageView(person.getGender().genderIcon));
+        gender.setGraphic(new ImageView(Gender.parseGender(person)));
         if (person.getGender().gender.isEmpty()) {
             gender.setManaged(false);
         }

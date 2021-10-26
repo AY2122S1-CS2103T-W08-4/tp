@@ -27,7 +27,6 @@ public class Gender {
 
 
     public final String gender;
-    public final Image genderIcon;
 
     /**
      * Constructs a {@code Gender}.
@@ -38,7 +37,6 @@ public class Gender {
         requireNonNull(gender);
         checkArgument(isValidGender(gender), MESSAGE_CONSTRAINTS);
         this.gender = gender;
-        this.genderIcon = parseGender();
     }
 
     /**
@@ -49,6 +47,25 @@ public class Gender {
             return true;
         }
         return test.matches(VALIDATION_REGEX);
+    }
+
+    /**
+     * Returns a gender icon given a gender.
+     */
+    public static Image parseGender(Person person) {
+        Gender gender = person.getGender();
+        FileInputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream("src/main/resources/images/gender/Others.png");
+            if (gender.isMale()) {
+                inputStream = new FileInputStream("src/main/resources/images/gender/Male.png");
+            } else if (gender.isFemale()) {
+                inputStream = new FileInputStream("src/main/resources/images/gender/Female.png");
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Gender Image File Not Found!!");
+        }
+        return new Image(inputStream);
     }
 
     /**
@@ -70,24 +87,6 @@ public class Gender {
      */
     public boolean isOther() {
         return gender.equals("O");
-    }
-
-    /**
-     * Returns a gender icon given a gender.
-     */
-    public Image parseGender() {
-        FileInputStream inputStream = null;
-        try {
-            inputStream = new FileInputStream("src/main/resources/images/gender/Others.png");
-            if (isMale()) {
-                inputStream = new FileInputStream("src/main/resources/images/gender/Male.png");
-            } else if (isFemale()) {
-                inputStream = new FileInputStream("src/main/resources/images/gender/Female.png");
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("File Not Found!!");
-        }
-        return new Image(inputStream);
     }
 
     @Override
