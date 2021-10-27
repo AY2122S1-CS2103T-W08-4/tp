@@ -10,6 +10,7 @@ import static seedu.address.logic.commands.CommandTestUtil.INVALID_GENDER_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_NAME_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_PHONE_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_SOCIAL_HANDLE_DESC;
+import static seedu.address.logic.commands.CommandTestUtil.INVALID_TAG_COLOUR_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_TAG_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_TUTORIAL_GROUP_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_AMY;
@@ -108,6 +109,8 @@ public class EditCommandParserTest {
         assertParseFailure(parser,
                 "1" + INVALID_SOCIAL_HANDLE_DESC, SocialHandle.MESSAGE_CONSTRAINTS); // invalid social handle
         assertParseFailure(parser, "1" + INVALID_TAG_DESC, Tag.MESSAGE_CONSTRAINTS); // invalid tag
+        assertParseFailure(parser, "1" + INVALID_TAG_COLOUR_DESC,
+                Tag.MESSAGE_CONSTRAINTS_COLOURS); // invalid tag colour
 
         // invalid phone followed by valid email
         assertParseFailure(parser, "1" + INVALID_PHONE_DESC + EMAIL_DESC_AMY, Phone.MESSAGE_CONSTRAINTS);
@@ -141,7 +144,7 @@ public class EditCommandParserTest {
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder().withName(VALID_NAME_AMY)
                 .withGender(VALID_GENDER_AMY).withPhone(VALID_PHONE_BOB).withEmail(VALID_EMAIL_AMY)
                 .withNationality(VALID_NATIONALITY_AMY).withTutorialGroup(VALID_TUTORIAL_GROUP_AMY)
-                .withSocialHandle(VALID_SOCIAL_HANDLE_AMY).withTags(VALID_TAG_HUSBAND, VALID_TAG_FRIEND)
+                .withSocialHandles(VALID_SOCIAL_HANDLE_AMY).withTags(VALID_TAG_HUSBAND, VALID_TAG_FRIEND)
                 .build();
         EditCommand expectedCommand = new EditCommand(targetIndex, descriptor);
 
@@ -201,7 +204,7 @@ public class EditCommandParserTest {
 
         // social handle
         userInput = targetIndex.getOneBased() + SOCIAL_HANDLE_DESC_AMY;
-        descriptor = new EditPersonDescriptorBuilder().withSocialHandle(VALID_SOCIAL_HANDLE_AMY).build();
+        descriptor = new EditPersonDescriptorBuilder().withSocialHandles(VALID_SOCIAL_HANDLE_AMY).build();
         expectedCommand = new EditCommand(targetIndex, descriptor);
         assertParseSuccess(parser, userInput, expectedCommand);
 
@@ -228,7 +231,7 @@ public class EditCommandParserTest {
 
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder().withPhone(VALID_PHONE_BOB)
                 .withEmail(VALID_EMAIL_BOB).withNationality(VALID_NATIONALITY_BOB).withGender(VALID_GENDER_BOB)
-                .withSocialHandle(VALID_SOCIAL_HANDLE_BOB).withRemark(VALID_REMARK_BOB)
+                .withSocialHandles(VALID_SOCIAL_HANDLE_BOB).withRemark(VALID_REMARK_BOB)
                 .withTags(VALID_TAG_FRIEND, VALID_TAG_HUSBAND).build();
         EditCommand expectedCommand = new EditCommand(targetIndex, descriptor);
 

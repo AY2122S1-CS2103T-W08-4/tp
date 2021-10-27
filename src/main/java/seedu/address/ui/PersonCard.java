@@ -43,13 +43,13 @@ public class PersonCard extends UiPart<Region> {
     @FXML
     private Label tutorialGroup;
     @FXML
-    private Label socialHandle;
-    @FXML
     private Label gender;
     @FXML
     private Label remark;
     @FXML
     private FlowPane tags;
+    @FXML
+    private FlowPane socialHandles;
 
     /**
      * Creates a {@code PersonCode} with the given {@code Person} and index to display.
@@ -90,7 +90,15 @@ public class PersonCard extends UiPart<Region> {
         }
         person.getTags().stream()
                 .sorted(Comparator.comparing(tag -> tag.tagName))
-                .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
+                .forEach(tag -> {
+                    Label l = new Label(tag.tagName);
+                    l.setStyle("-fx-background-color: " + tag.tagColour + ";");
+                    tags.getChildren().add(l);
+                });
+        person.getSocialHandles().stream()
+                .sorted(Comparator.comparing(socialHandle -> socialHandle.platform))
+                .forEach(socialHandle -> socialHandles.getChildren()
+                .add(new Label(socialHandle.platform + " : " + socialHandle.value)));
     }
 
     @Override
