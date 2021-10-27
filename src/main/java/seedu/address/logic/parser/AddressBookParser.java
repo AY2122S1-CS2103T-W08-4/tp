@@ -3,17 +3,21 @@ package seedu.address.logic.parser;
 import static seedu.address.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.commons.core.Messages.MESSAGE_UNKNOWN_COMMAND;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.AddTagCommand;
+import seedu.address.logic.commands.AliasCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.DeleteMultipleCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.ExitCommand;
+import seedu.address.logic.commands.ExportCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ImportCommand;
@@ -34,6 +38,26 @@ public class AddressBookParser {
     private static final Pattern BASIC_COMMAND_FORMAT = Pattern.compile("(?<commandWord>\\S+)(?<arguments>.*)");
 
     /**
+     * List of command words for command suggestions in case of a user typo
+     */
+    private static final List<String> COMMAND_WORDS = Arrays.asList(
+            AddCommand.COMMAND_WORD,
+            EditCommand.COMMAND_WORD,
+            DeleteCommand.COMMAND_WORD,
+            DeleteMultipleCommand.COMMAND_WORD,
+            ClearCommand.COMMAND_WORD,
+            FindCommand.COMMAND_WORD,
+            ListCommand.COMMAND_WORD,
+            ExitCommand.COMMAND_WORD,
+            HelpCommand.COMMAND_WORD,
+            RemarkCommand.COMMAND_WORD,
+            SortCommand.COMMAND_WORD,
+            StatisticsCommand.COMMAND_WORD,
+            ImportCommand.COMMAND_WORD,
+            ExportCommand.COMMAND_WORD
+    );
+
+    /**
      * Parses user input into command for execution.
      *
      * @param userInput full user input string
@@ -41,6 +65,10 @@ public class AddressBookParser {
      * @throws ParseException if the user input does not conform the expected format
      */
     public Command parseCommand(String userInput) throws ParseException {
+        if (CommandAliases.getValue(userInput).isPresent()) {
+            return CommandAliases.getValue(userInput).get();
+        }
+
         final Matcher matcher = BASIC_COMMAND_FORMAT.matcher(userInput.trim());
         if (!matcher.matches()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, HelpCommand.MESSAGE_USAGE));
@@ -92,8 +120,16 @@ public class AddressBookParser {
         case AddTagCommand.COMMAND_WORD:
             return new AddTagCommandParser().parse(arguments);
 
+        case ExportCommand.COMMAND_WORD:
+            return new ExportCommandParser().parse(arguments);
+
+        case AliasCommand.COMMAND_WORD:
+            return new AliasCommandParser().parse(arguments);
+
         default:
-            throw new ParseException(MESSAGE_UNKNOWN_COMMAND);
+            WordSuggestion commandSuggestions = new WordSuggestion(commandWord, COMMAND_WORDS, 3);
+
+            throw new ParseException(MESSAGE_UNKNOWN_COMMAND + commandSuggestions.getSuggestedWords());
         }
     }
 

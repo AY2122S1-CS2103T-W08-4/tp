@@ -10,6 +10,7 @@ import static seedu.address.logic.commands.CommandTestUtil.INVALID_GENDER_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_NAME_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_PHONE_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_SOCIAL_HANDLE_DESC;
+import static seedu.address.logic.commands.CommandTestUtil.INVALID_TAG_COLOUR_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_TAG_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_TUTORIAL_GROUP_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_AMY;
@@ -119,17 +120,17 @@ public class AddCommandParserTest {
 
     @Test
     public void parse_optionalFieldsMissing_success() {
+        //only name
+        Person expectedPersonOnlyName = new PersonBuilder(AMY).withPhone("").withGender("")
+                .withEmail("").withNationality("").withTutorialGroup("")
+                .withRemark("").withTags().withSocialHandles().build();
+        assertParseSuccess(parser, NAME_DESC_AMY, new AddCommand(expectedPersonOnlyName));
+
         // zero tags
         Person expectedPerson = new PersonBuilder(AMY).withTags().build();
         assertParseSuccess(parser, NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY + NATIONALITY_DESC_AMY
                 + TUTORIAL_GROUP_DESC_AMY + SOCIAL_HANDLE_DESC_AMY + REMARK_DESC_AMY + GENDER_DESC_AMY,
                 new AddCommand(expectedPerson));
-
-        // no social handle
-        Person expectedPersonNoSocial = new PersonBuilder(AMY).withSocialHandle("").build();
-        assertParseSuccess(parser, NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY + NATIONALITY_DESC_AMY
-                + TUTORIAL_GROUP_DESC_AMY + REMARK_DESC_AMY + TAG_DESC_FRIEND + GENDER_DESC_AMY,
-                new AddCommand(expectedPersonNoSocial));
 
         // no remark
         Person expectedPersonNoRemark = new PersonBuilder(AMY).withRemark("").build();
@@ -137,24 +138,11 @@ public class AddCommandParserTest {
                 + TUTORIAL_GROUP_DESC_AMY + SOCIAL_HANDLE_DESC_AMY + GENDER_DESC_AMY
                 + TAG_DESC_FRIEND, new AddCommand(expectedPersonNoRemark));
 
-        //no social handle and remark
-        Person expectedPersonNoSocialNoRemark = new PersonBuilder(AMY).withSocialHandle("").withRemark("").build();
-        assertParseSuccess(parser, NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY + NATIONALITY_DESC_AMY
-                + TUTORIAL_GROUP_DESC_AMY + TAG_DESC_FRIEND + GENDER_DESC_AMY,
-                new AddCommand(expectedPersonNoSocialNoRemark));
-
         //no tutorial group
         Person expectedPersonNoTutorial = new PersonBuilder(AMY).withTutorialGroup("").build();
         assertParseSuccess(parser, NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY + NATIONALITY_DESC_AMY
                 + SOCIAL_HANDLE_DESC_AMY + REMARK_DESC_AMY + GENDER_DESC_AMY
                 + TAG_DESC_FRIEND, new AddCommand(expectedPersonNoTutorial));
-
-        //no tutorial group and social handle
-        Person expectedPersonNoTutorialNoSocial = new PersonBuilder(AMY).withTutorialGroup("")
-                .withSocialHandle("").build();
-        assertParseSuccess(parser, NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY + NATIONALITY_DESC_AMY
-                + REMARK_DESC_AMY + TAG_DESC_FRIEND + GENDER_DESC_AMY,
-                new AddCommand(expectedPersonNoTutorialNoSocial));
 
         //no tutorial group and remark
         Person expectedPersonNoTutorialNoRemark = new PersonBuilder(AMY).withTutorialGroup("")
@@ -163,30 +151,11 @@ public class AddCommandParserTest {
                 + SOCIAL_HANDLE_DESC_AMY + TAG_DESC_FRIEND + GENDER_DESC_AMY,
                 new AddCommand(expectedPersonNoTutorialNoRemark));
 
-        //no tutorial group, social handle, and remark
-        Person expectedPersonNoTutNoSocialNoRemark = new PersonBuilder(AMY).withTutorialGroup("")
-                .withSocialHandle("").withRemark("").build();
-        assertParseSuccess(parser, NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY + NATIONALITY_DESC_AMY
-                + TAG_DESC_FRIEND + GENDER_DESC_AMY, new AddCommand(expectedPersonNoTutNoSocialNoRemark));
-
         //no nationality
         Person expectedPersonNoNat = new PersonBuilder(AMY).withNationality("").build();
         assertParseSuccess(parser, NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY
                 + TUTORIAL_GROUP_DESC_AMY + SOCIAL_HANDLE_DESC_AMY + REMARK_DESC_AMY
                 + TAG_DESC_FRIEND + GENDER_DESC_AMY, new AddCommand(expectedPersonNoNat));
-
-        //no nationality and social handle
-        Person expectedPersonNoNatNoSocial = new PersonBuilder(AMY).withNationality("").withSocialHandle("").build();
-        assertParseSuccess(parser, NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY
-                + TUTORIAL_GROUP_DESC_AMY + REMARK_DESC_AMY + GENDER_DESC_AMY
-                + TAG_DESC_FRIEND, new AddCommand(expectedPersonNoNatNoSocial));
-
-        //no nationality, social handle, and remark
-        Person expectedPersonNoNatNoSocialNoRemark = new PersonBuilder(AMY).withNationality("")
-                .withSocialHandle("").withRemark("").build();
-        assertParseSuccess(parser, NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY
-                + TUTORIAL_GROUP_DESC_AMY + TAG_DESC_FRIEND + GENDER_DESC_AMY,
-                new AddCommand(expectedPersonNoNatNoSocialNoRemark));
 
         //no email
         Person expectedPersonNoEmail = new PersonBuilder(AMY).withEmail("").build();
@@ -219,12 +188,6 @@ public class AddCommandParserTest {
         assertParseSuccess(parser, NAME_DESC_AMY + NATIONALITY_DESC_AMY
                 + TUTORIAL_GROUP_DESC_AMY + SOCIAL_HANDLE_DESC_AMY + GENDER_DESC_AMY
                 + TAG_DESC_FRIEND, new AddCommand(expectedPersonNoPhoneNoRemarkNoEmail));
-
-        //only name
-        Person expectedPersonOnlyName = new PersonBuilder(AMY).withPhone("").withGender("")
-                .withEmail("").withNationality("").withTutorialGroup("").withSocialHandle("")
-                .withRemark("").withTags().build();
-        assertParseSuccess(parser, NAME_DESC_AMY, new AddCommand(expectedPersonOnlyName));
 
     }
 
@@ -277,8 +240,13 @@ public class AddCommandParserTest {
 
         // invalid tag
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + NATIONALITY_DESC_BOB
-                + TUTORIAL_GROUP_DESC_BOB + SOCIAL_HANDLE_DESC_BOB + REMARK_DESC_BOB
+                + TUTORIAL_GROUP_DESC_BOB + REMARK_DESC_BOB
                 + INVALID_TAG_DESC + VALID_TAG_FRIEND + GENDER_DESC_BOB, Tag.MESSAGE_CONSTRAINTS);
+
+        // invalid tag colour
+        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + NATIONALITY_DESC_BOB
+                + TUTORIAL_GROUP_DESC_BOB + SOCIAL_HANDLE_DESC_BOB + REMARK_DESC_BOB
+                + INVALID_TAG_COLOUR_DESC + VALID_TAG_FRIEND + GENDER_DESC_BOB, Tag.MESSAGE_CONSTRAINTS_COLOURS);
 
         // two invalid values, only first invalid value reported
         assertParseFailure(parser, INVALID_NAME_DESC + PHONE_DESC_BOB + EMAIL_DESC_BOB
